@@ -5,6 +5,7 @@ import com.vrv.vap.browser.domain.SysRole;
 import com.vrv.vap.browser.service.SysRoleService;
 import com.vrv.vap.browser.vo.RoleQueryCondition;
 import com.vrv.vap.utils.common.PageResult;
+import com.vrv.vap.utils.common.Result;
 import com.vrv.vap.utils.common.ResultUtil;
 import io.swagger.annotations.Api;
 import org.slf4j.Logger;
@@ -29,12 +30,13 @@ public class SysRoleController {
 
     /**
      * 直接获取参数进行查询
+     *
      * @param name 界面上查询条件
      * @param page 第几个位置开始查找
      * @param rows 每次查找多少条数据
      * @return 返回分页对象
      */
-    @GetMapping
+    @GetMapping("/test")
     public PageResult<SysRole> queryRoleByExampleAndPagination(@RequestParam String name, @RequestParam int page, @RequestParam(name = "size") int rows) {
         Example example = new Example(SysRole.class);
         Example.Criteria criteria = example.createCriteria();
@@ -50,7 +52,7 @@ public class SysRoleController {
      * 参数为对象， 必须继承QueryCondition的，
      * 返回分页对象
      */
-    @GetMapping("/pagination")
+    @GetMapping
     public PageResult<SysRole> queryRoleAndPagination(@RequestBody RoleQueryCondition roleQueryCondition) {
         PageInfo<SysRole> pageInfo = null;
         // 从指定下标开始
@@ -77,5 +79,36 @@ public class SysRoleController {
         logger.debug("当前是第几页：" + pageInfo.getPageNum());
         logger.debug("当前页数据数量：" + pageInfo.getSize());
         return ResultUtil.success(pageInfo);
+    }
+
+    /**
+     * 依赖role的id进行查询对象
+     *
+     * @param rid 角色ID
+     * @return result
+     */
+    @GetMapping("/{rid:\\d+}")
+    public Result<SysRole> queryRoleById(@PathVariable Integer rid) {
+        SysRole sysRole = sysRoleService.findByPrimaryKey(rid);
+        return ResultUtil.success(sysRole);
+    }
+
+    /**
+     * 角色新增
+     *
+     * @param sysRole 对象
+     * @return 返回result
+     */
+    @PostMapping
+    public Result<SysRole> insertRole(@RequestBody SysRole sysRole) {
+        sysRoleService.insertSelective(sysRole);
+        return ResultUtil.success(sysRole);
+    }
+
+
+    @DeleteMapping("/{rid:\\d+}")
+    public Result<Boolean> deleteRoleById(@PathVariable Integer rid) {
+        sysRoleService.deleteByPrimaryKey(rid);
+        return ResultUtil.success(true);
     }
 }

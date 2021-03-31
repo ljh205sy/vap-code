@@ -3,11 +3,10 @@ package com.vrv.vap.browser.controller;
 import cn.hutool.core.collection.CollectionUtil;
 import com.vrv.vap.browser.domain.SysRole;
 import com.vrv.vap.browser.domain.SysUser;
-import com.vrv.vap.browser.exception.UserNotFoundExistException;
+import com.vrv.vap.browser.exception.UserNotExistException;
 import com.vrv.vap.browser.service.SysRoleUserService;
 import com.vrv.vap.browser.service.SysUserService;
 import com.vrv.vap.utils.common.Result;
-import com.vrv.vap.utils.common.ResultEnum;
 import com.vrv.vap.utils.common.ResultUtil;
 import io.swagger.annotations.*;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
@@ -49,42 +48,46 @@ public class SysUserController {
      */
     @ApiOperation("新增用户")
     @PostMapping
-    public Result<Boolean> insertUser(@Valid @RequestBody SysUser sysUser) {
+    public Result<SysUser> insertUser(@Valid @RequestBody SysUser sysUser) {
         logger.info(ReflectionToStringBuilder.toString(sysUser, ToStringStyle.MULTI_LINE_STYLE));
         sysUserService.insertSelective(sysUser);
         templateOperator(sysUser);
-        return ResultUtil.success(true);
+        return ResultUtil.success(sysUser);
     }
 
     @ResponseBody
     @PutMapping
     @ApiOperation(value = "用户修改", notes = "用户修改", hidden = false)
     public Result<Boolean> updateUser(@Valid @RequestBody SysUser sysUser) {
+        if (sysUser == null || sysUser.getId() == null) {
+            throw new UserNotExistException();
+        }
+        // findByProperty如果主键id为空，会查出所有的数据
+        List<SysUser> list = sysUserService.findByProperty("id", sysUser.getId());
+        if (CollectionUtil.isEmpty(list)) {
+            throw new UserNotExistException(sysUser.getId());
+        }
         logger.info(ReflectionToStringBuilder.toString(sysUser, ToStringStyle.MULTI_LINE_STYLE));
         sysUserService.updateSelective(sysUser);
         templateOperator(sysUser);
         return ResultUtil.success(true);
     }
 
-    @DeleteMapping("/{uid}}")
+    @DeleteMapping("/{uid:\\d+}")
     @ResponseBody
     @ApiImplicitParams({@ApiImplicitParam(name = "uid", value = "用户id")})
     @ApiOperation(value = "用户删除", notes = "删除用户")
-    public Result<Boolean> delete(@PathVariable @ApiParam("用户id") Integer uid) {
-        try {
-            SysUser queryUser = new SysUser();
-            queryUser.setId(uid);
-            SysUser sysUser = sysUserService.selectOne(queryUser);
-            if (sysUser == null) {
-                throw new UserNotFoundExistException(uid);
-            }
-            // 这个是真删除，注意这块可以写自己的业务逻辑
-            int number = sysUserService.deleteByPrimaryKey(uid);
-            // 删除用户的角色信息，一般是假删除，所以中间表中信息可以不删除
-
-        } catch (Exception e) {
-            return ResultUtil.error(ResultEnum.UNKNOW_FAILED);
+    public Result<Boolean> deleteUserById(@PathVariable("uid") @ApiParam("用户id") Integer uid) {
+        SysUser queryUser = new SysUser();
+        queryUser.setId(uid);
+        SysUser sysUser = sysUserService.selectOne(queryUser);
+        if (sysUser == null) {
+            throw new UserNotExistException(uid);
         }
+        // 这个是真删除，注意这块可以写自己的业务逻辑
+        // 删除用户的角色信息，一般是假删除，所以中间表中信息可以不删除
+        sysUserService.deleteByPrimaryKey(sysUser.getId());
+        sysUserRoleService.deleteUserAndRoles(sysUser.getId(), null);
         return ResultUtil.success(true);
     }
 

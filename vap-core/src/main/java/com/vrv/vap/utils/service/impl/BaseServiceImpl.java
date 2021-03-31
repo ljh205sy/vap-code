@@ -69,6 +69,9 @@ public abstract class BaseServiceImpl<T, ID extends Serializable> implements Bas
 
     @Override
     public List<T> findByProperty(String property, Object value) {
+        if(value == null) {
+            throw new RuntimeException("参数值为空，存在异常！");
+        }
         Example example = new Example(mapperClass);
         return getListByCriteria(property, value, example);
     }
