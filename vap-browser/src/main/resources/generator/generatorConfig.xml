@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <context id="MysqlContext" targetRuntime="MyBatis3Simple" defaultModelType="flat">
+        <property name="beginningDelimiter" value="`"/>
+        <property name="endingDelimiter" value="`"/>
+        <property name="javaFileEncoding" value="UTF-8"/>
+        <!-- 是否使用通用 Mapper 提供的注释工具，默认 true 使用，这样在生成代码时会包含字段的注释（目前只有 mysql 和 oracle 支持）-->
+        <property name="useMapperCommentGenerator" value="true"/>
+
+        <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
+            <!-- 配置后生成的 Mapper 接口都会自动继承这个接口-->
+            <property name="mappers" value="tk.mybatis.mapper.common.MySqlMapper"/>
+        </plugin>
+
+        <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
+            <!-- 配置后生成的 Mapper 接口都会自动继承这个接口 -->
+            <property name="mappers" value="tk.mybatis.mapper.common.Mapper"/>
+            <!-- 是否区分大小写，默认 false -->
+            <property name="caseSensitive" value="true"/>
+        </plugin>
+
+        <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
+            <property name="mappers" value="tk.mybatis.mapper.common.IdsMapper"/>
+        </plugin>
+
+        <!-- 项目自定义baseMapper -->
+        <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
+            <property name="mappers" value="tk.mybatis.com.vrv.vap.utils.mapper.MybatisMapper"/>
+        </plugin>
+
+        <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+                        connectionURL="jdbc:mysql://127.0.0.1:3306/usercenter?characterEncoding=utf-8&amp;serverTimezone=GMT%2B8&amp;nullCatalogMeansCurrent=true"
+                        userId="root"
+                        password="123456">
+        </jdbcConnection>
+
+        <!-- 对于生成的pojo所在包 -->
+        <javaModelGenerator targetPackage="com.vrv.vap.browser.domain"
+                            targetProject="D:\\VRV\\prisonBreak\\vap-code\\vap-browser\\src\\main\\java"/>
+
+        <!-- 对于生成的mapper所在目录 -->
+        <sqlMapGenerator targetPackage="mapper"
+                         targetProject="D:\\VRV\\prisonBreak\\vap-code\\vap-browser\\src\\main\\resources"/>
+
+        <!-- 配置mapper对应的java映射 -->
+        <javaClientGenerator targetPackage="com.vrv.vap.browser.mapper"
+                             targetProject="D:\\VRV\\prisonBreak\\vap-code\\vap-browser\\src\\main\\java"
+                             type="XMLMAPPER"/>
+
+        <!-- 要生成那些表(更改tableName和domainObjectName就可以) -->
+        <!--        <table tableName="sys_user" domainObjectName="SysUser"/>-->
+        <!--        <table tableName="sys_role" domainObjectName="SysRole"-->
+        <!--               enableCountByExample="true" enableUpdateByExample="true"-->
+        <!--               enableDeleteByExample="true" enableSelectByExample="true"-->
+        <!--               selectByExampleQueryId="true">-->
+        <!--            <property name="useActualColumnNames" value="true" />-->
+        <!--        </table>-->
+
+        <!--        <table tableName="sys_user_role" domainObjectName="SysUserRole"-->
+        <!--               enableCountByExample="true" enableUpdateByExample="true"-->
+        <!--               enableDeleteByExample="true" enableSelectByExample="true"-->
+        <!--               selectByExampleQueryId="true">-->
+        <!--                &lt;!&ndash; 表字段原样输出&ndash;&gt;-->
+        <!--                &lt;!&ndash; true：MyBatis Generator会使用数据库中实际的字段名字作为生成的实体类的属性名。&ndash;&gt;-->
+        <!--       　　    &lt;!&ndash;  false：这是默认值。如果设置为false,则MyBatis Generator会将数据库中实际的字段名字转换为Camel Case风格作为生成的实体类的属性名&ndash;&gt;-->
+        <!--&lt;!&ndash;            <property name="useActualColumnNames" value="true" />&ndash;&gt;-->
+        <!--            &lt;!&ndash; 表字段驼峰输出到对应的类中&ndash;&gt;-->
+        <!--            <property name="useActualColumnNames" value="false" />-->
+        <!--            &lt;!&ndash; &ndash;&gt;-->
+        <!--            <generatedKey column="id" sqlStatement="mysql" identity="true"/>-->
+        <!--        </table>-->
+        <table tableName="sys_user" domainObjectName="SysUser">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql" identity="true"/>
+        </table>
+    </context>
+</generatorConfiguration>

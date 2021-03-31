@@ -1,0 +1,62 @@
+# sql的mapper的目录，配置sql打印
+logging:
+  level:
+   com.vrv.vap.browser.mapper: debug
+# mapper的orm对象映射，及不扫描的类
+mapper:
+  identity: MYSQL
+  #通用mapper的所在接口名称不只是包名
+  mappers: com.vrv.vap.utils.mapper.MybatisMapper
+  not-empty: false
+
+mybatis:
+  configuration:
+    aggressive-lazy-loading: false  # 延迟加载
+    lazy-load-trigger-methods: equals,clone,hashCode
+    lazy-loading-enabled: true  # 延迟加载
+  mapper-locations: classpath:mapper/*.xml # 用于将配置路径下的 * .xml文件加载到 mybatis中
+  type-aliases-package: com.vrv.vap.browser.domain # 定POJO扫描包来让 mapper.xml 文件的 resultType 自动扫描到自定义POJO，这样就不用每次指定完全限定名
+pagehelper:
+  helperDialect: mysql
+  params: count=countSql
+  reasonable: true
+  supportMethodsArguments: true
+restart:
+  include:
+    mapper: /mapper-[\w-\.]+jar
+    pagehelper: /pagehelper-[\w-\.]+jar
+server:
+  port: 8080
+  tomcat:
+    uri-encoding: utf-8
+spring:
+  datasource:
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+    driver-class-name: com.mysql.jdbc.Driver
+    filters: stat
+    initialSize: 5
+    login-password: vap
+    login-username: vap
+    maxActive: 20
+    maxPoolPreparedStatementPerConnectionSize: 20
+    maxWait: 60000
+    minEvictableIdleTimeMillis: 300000
+    minIdle: 5
+    password: 123456
+    poolPreparedStatements: true
+    testOnBorrow: false
+    testOnReturn: false
+    testWhileIdle: true
+    timeBetweenEvictionRunsMillis: 60000
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:3306}/usercenter?characterEncoding=utf-8&serverTimezone=GMT%2B8&useUnicode=true&useSSL=false&
+    useGlobalDataSourceStat: true
+    username: root
+    validationQuery: SELECT 1 FROM DUAL
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  profiles:
+    active: dev
