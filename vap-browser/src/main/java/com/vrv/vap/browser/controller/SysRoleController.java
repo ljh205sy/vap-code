@@ -3,17 +3,15 @@ package com.vrv.vap.browser.controller;
 import com.github.pagehelper.PageInfo;
 import com.vrv.vap.browser.domain.SysRole;
 import com.vrv.vap.browser.service.SysRoleService;
-import com.vrv.vap.utils.common.Result;
+import com.vrv.vap.browser.vo.RoleQueryCondition;
+import com.vrv.vap.utils.common.PageResult;
 import com.vrv.vap.utils.common.ResultUtil;
 import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import tk.mybatis.mapper.entity.Example;
 
 /**
@@ -29,8 +27,15 @@ public class SysRoleController {
     @Autowired
     private SysRoleService sysRoleService;
 
+    /**
+     * 直接获取参数进行查询
+     * @param name 界面上查询条件
+     * @param page 第几个位置开始查找
+     * @param rows 每次查找多少条数据
+     * @return 返回分页对象
+     */
     @GetMapping
-    public Result<PageInfo<SysRole>> queryRoleByExampleAndPagination(@RequestParam String name, @RequestParam int page, @RequestParam(name="size") int rows){
+    public PageResult<SysRole> queryRoleByExampleAndPagination(@RequestParam String name, @RequestParam int page, @RequestParam(name = "size") int rows) {
         Example example = new Example(SysRole.class);
         Example.Criteria criteria = example.createCriteria();
         if (!StringUtils.isEmpty(name)) {
@@ -38,5 +43,39 @@ public class SysRoleController {
         }
         PageInfo<SysRole> pageExample = sysRoleService.findPageExample(page, rows, example);
         return ResultUtil.success(pageExample);
+    }
+
+    /**
+     * 通过对象来封装
+     * 参数为对象， 必须继承QueryCondition的，
+     * 返回分页对象
+     */
+    @GetMapping("/pagination")
+    public PageResult<SysRole> queryRoleAndPagination(@RequestBody RoleQueryCondition roleQueryCondition) {
+        PageInfo<SysRole> pageInfo = null;
+        // 从指定下标开始
+        int page = roleQueryCondition.getStart();
+        // 每页显示多少条
+        int size = roleQueryCondition.getSize();
+
+        Example example = new Example(SysRole.class);
+        Example.Criteria criteria = example.createCriteria();
+        String rname = roleQueryCondition.getName();
+        if (!StringUtils.isEmpty(rname)) {
+            criteria.andLike("rname", "%" + rname + "%");
+        }
+        if (!StringUtils.isEmpty(roleQueryCondition.getOrder()) || !StringUtils.isEmpty(roleQueryCondition.getBy())) {
+            // example.setOrderByClause("`index` ASC,`AFTER_CHECK_TIME` ASC");
+            String sortOrderByClause = roleQueryCondition.getOrder() + " " + roleQueryCondition.getBy();
+            example.setOrderByClause(sortOrderByClause);
+            pageInfo = sysRoleService.findPageExample(page, size, example);
+        }
+        //将封装好的数据返回到前台页面， 返回ResponseBody
+        logger.debug("查询总数量：" + pageInfo.getTotal());
+        logger.debug("总页数：" + pageInfo.getPages());
+        logger.debug("每页显示条数：" + pageInfo.getPageSize());
+        logger.debug("当前是第几页：" + pageInfo.getPageNum());
+        logger.debug("当前页数据数量：" + pageInfo.getSize());
+        return ResultUtil.success(pageInfo);
     }
 }

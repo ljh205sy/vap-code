@@ -9,5 +9,5 @@ package com.vrv.vap.utils.common;
 public interface IResultCode {
     Integer getCode();
 
-    String getMsg();
+    String getMessage();
 }

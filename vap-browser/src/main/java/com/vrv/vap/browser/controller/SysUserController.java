@@ -7,7 +7,7 @@ import com.vrv.vap.browser.exception.UserNotFoundExistException;
 import com.vrv.vap.browser.service.SysRoleUserService;
 import com.vrv.vap.browser.service.SysUserService;
 import com.vrv.vap.utils.common.Result;
-import com.vrv.vap.utils.common.ResultCodeEnum;
+import com.vrv.vap.utils.common.ResultEnum;
 import com.vrv.vap.utils.common.ResultUtil;
 import io.swagger.annotations.*;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
@@ -83,7 +83,7 @@ public class SysUserController {
             // 删除用户的角色信息，一般是假删除，所以中间表中信息可以不删除
 
         } catch (Exception e) {
-            return ResultUtil.error(ResultCodeEnum.UNKNOW_FAILED);
+            return ResultUtil.error(ResultEnum.UNKNOW_FAILED);
         }
         return ResultUtil.success(true);
     }

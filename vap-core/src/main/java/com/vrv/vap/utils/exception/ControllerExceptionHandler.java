@@ -1,7 +1,7 @@
 package com.vrv.vap.utils.exception;
 
 import com.vrv.vap.utils.common.Result;
-import com.vrv.vap.utils.common.ResultCodeEnum;
+import com.vrv.vap.utils.common.ResultEnum;
 import com.vrv.vap.utils.common.ResultUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +43,6 @@ public class ControllerExceptionHandler {
                 logger.error(objectName + "" + field + "" + defaultMessage);
             }
         }
-        return ResultUtil.error(ResultCodeEnum.Field_VALIDATE_ERROR.getCode(), ResultCodeEnum.Field_VALIDATE_ERROR.getMsg(), list);
+        return ResultUtil.error(ResultEnum.Field_VALIDATE_ERROR.getCode(), ResultEnum.Field_VALIDATE_ERROR.getMessage(), list);
     }
 }
