@@ -1,0 +1,38 @@
+package com.vrv.vap.browser.service.impl;
+
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.vrv.vap.browser.domain.SysRole;
+import com.vrv.vap.browser.mapper.SysRoleMapper;
+import com.vrv.vap.browser.service.SysRoleService;
+import com.vrv.vap.core.service.impl.BaseServiceImpl;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import tk.mybatis.mapper.entity.Example;
+
+import javax.annotation.Resource;
+import java.util.List;
+
+/**
+ * @author liujinhui
+ * date 2021/3/30 21:28
+ */
+@Service
+public class SysRoleServiceImpl extends BaseServiceImpl<SysRole,Integer> implements SysRoleService {
+    @Resource
+    private SysRoleMapper sysRoleMapper;
+
+
+    @Override
+    public List<SysRole> queryRoleByExampleAndPagination(Integer page, Integer rows, String rname ) {
+        Example example = new Example(SysRole.class);
+        Example.Criteria criteria = example.createCriteria();
+        if (!StringUtils.isEmpty(rname)) {
+            criteria.andLike("username", "%" + rname + "%");
+        }
+        PageHelper.startPage(page, rows);
+        List<SysRole> sysRoles = sysRoleMapper.selectByExample(example);
+        PageInfo pageInfo = new PageInfo(sysRoles);
+        return pageInfo.getList();
+    }
+}

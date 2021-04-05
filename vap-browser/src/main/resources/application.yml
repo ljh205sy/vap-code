@@ -6,7 +6,7 @@ logging:
 mapper:
   identity: MYSQL
   #通用mapper的所在接口名称不只是包名
-  mappers: com.vrv.vap.utils.mapper.MybatisMapper
+  mappers: com.vrv.vap.core.mapper.MybatisMapper
   not-empty: false
 
 mybatis:

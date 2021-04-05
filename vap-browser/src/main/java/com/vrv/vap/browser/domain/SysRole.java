@@ -1,12 +1,19 @@
 package com.vrv.vap.browser.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
+/**
+ * @author wh1107066
+ */
 @Table(name = "sys_role")
+// mybatis采用了懒加载,而springmvc中利用@ResponseBody注解返回实体类的JSON时会抛异常:
+@JsonIgnoreProperties(value = { "handler" })
 public class SysRole {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,6 +44,16 @@ public class SysRole {
      */
     @Column(name = "tenant_id")
     private String tenantId;
+
+    private List<SysMenu> menus;
+
+    public List<SysMenu> getMenus() {
+        return menus;
+    }
+
+    public void setMenus(List<SysMenu> menus) {
+        this.menus = menus;
+    }
 
     /**
      * @return id
@@ -132,5 +149,18 @@ public class SysRole {
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
+    }
+
+    @Override
+    public String toString() {
+        return "SysRole{" +
+                "id=" + id +
+                ", code='" + code + '\'' +
+                ", name='" + name + '\'' +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                ", tenantId='" + tenantId + '\'' +
+                ", menus=" + menus +
+                '}';
     }
 }

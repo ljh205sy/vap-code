@@ -5,7 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.vrv.vap.browser.domain.SysRole;
 import com.vrv.vap.browser.mapper.SysRoleMapper;
 import com.vrv.vap.browser.service.SysRoleService;
-import com.vrv.vap.utils.service.impl.BaseServiceImpl;
+import com.vrv.vap.core.service.impl.BaseServiceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import tk.mybatis.mapper.entity.Example;
@@ -18,13 +18,13 @@ import java.util.List;
  * date 2021/3/30 21:28
  */
 @Service
-public class SysRoleServiceImpl extends BaseServiceImpl<SysRole,Integer> implements SysRoleService {
+public class SysRoleServiceImpl extends BaseServiceImpl<SysRole, Integer> implements SysRoleService {
     @Resource
     private SysRoleMapper sysRoleMapper;
 
 
     @Override
-    public List<SysRole> queryRoleByExampleAndPagination(Integer page, Integer rows, String rname ) {
+    public List<SysRole> queryRoleByExampleAndPagination(Integer page, Integer rows, String rname) {
         Example example = new Example(SysRole.class);
         Example.Criteria criteria = example.createCriteria();
         if (!StringUtils.isEmpty(rname)) {
@@ -34,5 +34,10 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRole,Integer> impleme
         List<SysRole> sysRoles = sysRoleMapper.selectByExample(example);
         PageInfo pageInfo = new PageInfo(sysRoles);
         return pageInfo.getList();
+    }
+
+    @Override
+    public SysRole queryMenusByRid(Integer rid) {
+        return sysRoleMapper.queryMenusByRid(rid);
     }
 }

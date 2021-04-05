@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vrv.vap.browser.mapper.TclassMapper">
+    <resultMap id="BaseResultMap" type="com.vrv.vap.browser.domain.Tclass">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="Guid" jdbcType="VARCHAR" property="guid"/>
+        <result column="RegionManagerID" jdbcType="VARCHAR" property="regionmanagerid"/>
+        <result column="ClassId" jdbcType="VARCHAR" property="classid"/>
+        <result column="ClassName" jdbcType="VARCHAR" property="classname"/>
+        <result column="UpID" jdbcType="VARCHAR" property="upid"/>
+        <result column="OrganCode" jdbcType="VARCHAR" property="organcode"/>
+        <result column="orderfield" jdbcType="VARCHAR" property="orderfield"/>
+        <result column="securityId" jdbcType="VARCHAR" property="securityid"/>
+        <result column="reg_type" jdbcType="VARCHAR" property="regType"/>
+    </resultMap>
+
+    <resultMap id="recursionTclassMap" type="com.vrv.vap.browser.domain.Tclass" extends="BaseResultMap">
+        <collection property="children" fetchType="eager" ofType="com.vrv.vap.browser.domain.Tclass"
+                    column="guid" select="findTclassByParentId"/>
+    </resultMap>
+
+    <select id="findAllRecursion" resultMap="recursionTclassMap">
+        SELECT *
+        FROM tclass
+    </select>
+
+    <select id="findAllRecursionById" parameterType="string" resultMap="recursionTclassMap">
+        SELECT *
+        FROM tclass
+        WHERE guid = #{guid}
+        ORDER BY `orderfield` ASC
+    </select>
+
+    <select id="findTclassByParentId" parameterType="string" resultType="com.vrv.vap.browser.domain.Tclass">
+        SELECT *
+        FROM tclass
+        WHERE upid = #{guid}
+        ORDER BY `orderfield` ASC
+    </select>
+
+
+    <select id="findAllTclass" resultMap="BaseResultMap">
+        SELECT *
+        FROM tclass
+    </select>
+</mapper>

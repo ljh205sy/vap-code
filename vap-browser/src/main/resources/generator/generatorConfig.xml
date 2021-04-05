@@ -29,7 +29,7 @@
 
         <!-- 项目自定义baseMapper -->
         <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
-            <property name="mappers" value="tk.mybatis.com.vrv.vap.utils.mapper.MybatisMapper"/>
+            <property name="mappers" value="tk.mybatis.com.vrv.vap.core.mapper.MybatisMapper"/>
         </plugin>
 
         <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"

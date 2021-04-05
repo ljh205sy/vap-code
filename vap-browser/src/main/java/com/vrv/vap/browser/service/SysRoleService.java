@@ -1,7 +1,7 @@
 package com.vrv.vap.browser.service;
 
 import com.vrv.vap.browser.domain.SysRole;
-import com.vrv.vap.utils.service.BaseService;
+import com.vrv.vap.core.service.BaseService;
 
 import java.util.List;
 
@@ -12,4 +12,11 @@ import java.util.List;
 public interface SysRoleService extends BaseService<SysRole,Integer> {
 
     List<SysRole> queryRoleByExampleAndPagination(Integer page, Integer rows, String rname);
+
+    /**
+     * 依赖角色ID，查询所有菜单
+     * @param rid 角色ID
+     * @return 返回角色列表
+     */
+    SysRole queryMenusByRid(Integer rid);
 }

@@ -38,6 +38,7 @@
     <modules>
         <module>vap-core</module>
         <module>vap-browser</module>
+		<module>vap-tclass</module>
     </modules>
 
     <build>

@@ -96,15 +96,23 @@ public class SysRoleControllerTest {
 
     /**
      * 删除角色，事务回滚，不提交到数据库中
+     *
      * @throws Exception 抛出异常
      */
     @Test
     @Transactional
     @Rollback
     public void deleteRole() throws Exception {
-        String result = mockMvc.perform(MockMvcRequestBuilders.delete("/role/20")).andExpect(status().isOk())
+        String result = mockMvc.perform(MockMvcRequestBuilders.delete("/role/20"))
+                .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
         System.out.println(result);
     }
 
+    @Test
+    public void querySysRoleAndMenus() throws Exception {
+        String result = mockMvc.perform(MockMvcRequestBuilders.get("/role/menu/1").contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        System.out.println(result);
+    }
 }
